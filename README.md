@@ -1,4 +1,4 @@
-Titulo: Hachi social network (Small facebook type)
+Hachi social network (Small facebook type)
 
 Overview: 
  
