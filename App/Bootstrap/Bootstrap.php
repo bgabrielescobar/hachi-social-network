@@ -34,11 +34,10 @@ class Bootstrap {
         $scriptSelf = $_SERVER['PHP_SELF'];
 
         $preController =  ucfirst(str_replace(['/','.php'], '', $scriptSelf));
-        Settings::putSetting('controller', $preController);
+        Settings::putSetting('controller', $preController); 
         unset($preController);
 
-        //To Do: Change this for loader class
-        $controller = 'App\Controller\\' . ucfirst(str_replace(['/','.php'], '', $scriptSelf)) . 'Controller';
+        $controller = ucfirst(str_replace(['/','.php'], '', $scriptSelf)) . 'Controller';
         
         $objController = new $controller;
 
@@ -46,13 +45,23 @@ class Bootstrap {
     }
 
     private static function classLoader (): void
-    {
+    { 
         spl_autoload_register( function($className) 
         {
+            $directories = [   
+                '\\',
+                '\App\Controller\\',
+                '\Helpers',
+                '\Module',
+            ];
             //To production include str_replace('\\', '/', $className) . '.php';
-            //echo $className . '<br>';
-            include $className . '.php';
+            foreach ($directories as $directory) {
+                if (file_exists( dirname(__DIR__, 2)  . $directory . $className . '.php')) {
+                    include dirname(__DIR__, 2) . $directory . $className . '.php';
+                    break;
+                }
+            }
         });
     } 
 
-} 
+}
