@@ -1,20 +1,20 @@
 
 window.onload( () => {
-    let createAccountBottom = document.querySelector('.signup-image-link');
-    let signInBottom = document.querySelector('.signin-image-link');
 
-    let signUpSection = document.querySelector('.display-off');
-    let signInSection = document.querySelector('.display-block-on');
+    const signupFormSection = document.querySelector('.signup-form-section');
+    const signinFormSection = document.querySelector('.signin-form-section');
+    const signupLink = document.querySelector('.signup-image-link');
+    const signinLink = document.querySelector('.signin-image-link');
 
-    createAccountBottom.addEventListener('click', fadeSection);
+    signupLink.addEventListener('click', function() {
+        signinFormSection.classList.remove('display-on');
+        signupFormSection.classList.add('display-on');
+    });
 
-    signInBottom.addEventListener('click', fadeSection);
-
-    function fadeSection() {
-        signUpSection.classList.toggle('display-off');
-        signInSection.classList.toggle('display-off');
-    }
-
+    signinLink.addEventListener('click', function() {
+        signupFormSection.classList.remove('display-on');
+        signinFormSection.classList.add('display-on');
+    });
     async function insertUser() {
         alert('mamadisimo!!!!!!!!');
         let URL_USER_REGISTERR = '/register.php';

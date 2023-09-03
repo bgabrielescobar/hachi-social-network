@@ -1,14 +1,18 @@
 <div class="main">
     <!-- Sign up form -->
-    <section class="display-off">
+    <div class="section-signup-form display-off">
         <div class="container">
             <div class="signup-content">
                 <div class="signup-form">
                     <h2 class="form-title">Sign up</h2>
                     <form method="POST" class="register-form" id="register-form">
                         <div class="form-group">
-                            <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                            <input type="text" name="name" id="name" placeholder="Your Name" required/>
+                            <label for="first_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="first_name" id="first_name" placeholder="First Name" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="last_name" id="last_name" placeholder="Last Name" required/>
                         </div>
                         <div class="form-group">
                             <label for="email"><i class="zmdi zmdi-email"></i></label>
@@ -33,10 +37,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Sing in  Form -->
-    <section class="display-block-on">
+    <div class="section-signin-form display-on">
         <div class="container">
             <div class="signin-content">
                 <div class="signin-image">
@@ -48,24 +52,24 @@
                     <h2 class="form-title">Sign up</h2>
                     <form method="POST" class="register-form" id="login-form">
                         <div class="form-group">
-                            <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                            <input type="text" name="your_name" id="your_name" placeholder="Your Name" />
+                            <label for="your_email"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="email" id="your_email" placeholder="Your Email" />
                         </div>
                         <div class="form-group">
                             <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                            <input type="password" name="your_pass" id="your_pass" placeholder="Password" />
+                            <input type="password" name="pass" id="your_pass" placeholder="Password" />
                         </div>
                         <div class="form-group">
                             <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
                             <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
                         </div>
                         <div class="form-group form-button">
-                            <input type="submit" name="signin" id="signin" class="form-submit" value="Log in" />
+                            <input type="submit" name="signin" id="signin" class="form-submit" value="Log in" onclick="loginUser()" />
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
 </div>

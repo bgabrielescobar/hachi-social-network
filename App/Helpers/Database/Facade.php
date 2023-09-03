@@ -2,6 +2,8 @@
 
  namespace App\Helpers\Database;
 
+ use App\Helpers\Database\Tables\User;
+
  class Facade {
 
     private $userInstance;
@@ -11,7 +13,7 @@
         $this->userInstance = new User();    
     }
 
-    public function getUserInstance()
+    public function getUserClass()
     {
         return $this->userInstance;
     }

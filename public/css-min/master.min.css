@@ -5,10 +5,14 @@
   background-color: #f44336;
   color: white;
   opacity: 1;
-  transition: opacity 0.6s;
+  transition: opacity 0.9s, transform 0.9s;
   margin-bottom: 15px;
 }
 
+.alert > p{
+  display: inline;
+  color: white;
+}
 .alert.success {background-color: #04AA6D;}
 .alert.info {background-color: #2196F3;}
 .alert.warning {background-color: #ff9800;}
@@ -22,4 +26,13 @@
   line-height: 20px;
   cursor: pointer;
   transition: 0.3s;
+}
+
+.hide-alert{
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.display-alert{
+  transform: translateY(0);
+  opacity: 1;
 }

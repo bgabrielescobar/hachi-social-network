@@ -6,29 +6,41 @@ use App\Config\Settings;
 
 abstract class Module {
 
-    protected $data; 
 
-    const EXTENSION_VIEW = '.view.php';
+    const PATH_VIEWS = '/App/View/{view-template}.view.php';
+
+    private $viewList = [
+        '/App/View/Head.view.php'
+    ];
+
+    protected $data;
 
     public function render($data)
     {
-        array_push($this->data, $data);
+        $this->data = $data;
+        $this->addRequestModule();
         $this->addResources();
         $this->renderViews($this->data);
+    }
+
+    protected function addRequestModule()
+    {
+        $this->addView(Settings::get('controller'));
     }
     
     protected function addView(string $view) : void
     {
-        $pathView = str_replace('{view-template}', $view, Settings::getSetting('path-view'));
-        Settings::putSetting('bases-view', $pathView);
+        $pathView = str_replace('{view-template}', $view, Module::PATH_VIEWS);
+        $this->viewList[] = $pathView;
     }
 
     private function renderViews($data)
     {
-        foreach (Settings::getSetting('bases-view') as $view) 
+        foreach ($this->viewList as $view)
         {
-            if (file_exists($view)) {
-                include $view;
+            $viewPath = dirname(__DIR__, 3 ). $view;
+            if (file_exists($viewPath)) {
+                require_once $viewPath;
             }
         }
     }
@@ -39,17 +51,19 @@ abstract class Module {
 
         $this->data['css'][] = str_replace(
             '{cssView}',
-             Settings::getSetting('controller'), 
-             Settings::getSetting('css-min-path')
+             Settings::get('controller'),
+             Settings::get('css-min-path')
             );
 
-        $this->data['css'] = array_merge($this->data['css'], Settings::getSetting('external-css'));
+        $this->data['css'][] = Settings::get('master-css');
 
         $this->data['js'][] = str_replace(
             '{jsView}',
-             Settings::getSetting('controller'), 
-             Settings::getSetting('js-min-path')
+             Settings::get('controller'),
+             Settings::get('js-min-path')
             );
+
+        $this->data['js'][] = Settings::get('master-js');
     }
 
  }
