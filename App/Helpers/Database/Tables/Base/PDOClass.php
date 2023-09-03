@@ -11,6 +11,7 @@ class PDOClass {
 
     public function __construct()
     {
+        echo Settings::get('HOST') . Settings::get('DB_NAME') . Settings::get('USER_NAME') . Settings::get('PASSWORD');
         try {
             $this->pdo = new PDO(
             'mysql:' .
