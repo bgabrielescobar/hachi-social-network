@@ -11,6 +11,7 @@ class PDOClass {
 
     public function __construct()
     {
+        try {
             $this->pdo = new PDO(
             'mysql:' .
                 'host=' . Settings::get('HOST') .
@@ -18,7 +19,9 @@ class PDOClass {
                 Settings::get('USER_NAME'),
                 Settings::get('PASSWORD')
             );
-
+        } catch (PDOException $e) {
+            die("Error en la conexión a la base de datos: " . $e->getMessage());
+        }
     }
 
 }
