@@ -2,24 +2,14 @@
 
 namespace App\Controller;
 
-use App\Config\Settings; 
 use App\Controller\Base\Controller;
 
 class IndexController extends Controller
 {
     public function indexAction()
     {
-
-        if ($this->isUserLogged()) {
-            header('Location: home.php');
-        }
-
+        // Logged users are sent to home.php by the Bootstrap.
         $this->postController();
-    }
-
-    private function isUserLogged(): bool
-    {
-        return isset($_COOKIE['user_logged']);
     }
 
 }

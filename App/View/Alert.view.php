@@ -1,4 +1,4 @@
-<div class="alert hide-alert">
+<div class="alert" role="alert">
   <span class="closebtn">&times;</span>
-  <strong><?php echo $data['strong-alert'];?> </strong>  <p><?php echo $data['message-alert']; ?></p>
+  <strong></strong> <p></p>
 </div>

@@ -2,13 +2,32 @@
 
 namespace App\Controller;
 
-use App\Helpers\Cookie\CookieManager;
+use App\Controller\Base\Controller;
+use App\Helpers\Database\Singleton;
+use App\Helpers\Session\SessionManager;
 
-class HomeController
+class HomeController extends Controller
 {
     public function indexAction()
     {
-        $credential = CookieManager::getInstance()->getLoginCookie();
-        echo print_r($credential,1);
+        $userId = SessionManager::getInstance()->getUserId();
+        $userTable = Singleton::getFacade()->getUserClass();
+
+        // home.php?user=ID shows only the posts of that user.
+        $authorId = isset($_GET['user']) ? (int) $_GET['user'] : null;
+        $author = $authorId ? $userTable->selectUserById($authorId) : null;
+
+        if ($authorId !== null && !$author) {
+            header('Location: home.php');
+            exit;
+        }
+
+        $this->data = [
+            'user' => $userTable->selectUserById($userId),
+            'author' => $author,
+            'posts' => Singleton::getFacade()->getPostClass()->selectTimeline($userId, $authorId),
+        ];
+
+        $this->postController();
     }
 }

@@ -1,32 +1,64 @@
-Hachi social network (Small facebook type)
+Hachi social network (Small twitter type)
 
 Overview: 
  
 Small social network application to practice PHP/HTML/CSS/SQL.
 
-This social network can register users as like login with your account, post personal states, upload photos, add friends and watch friend post as interactive post (Comments/Likes).
+Users can create an account, log in, publish short posts (up to 280 characters), like posts and see the posts of every user in a shared timeline.
 
 
-Scope
+Features
+
+  * Sign up / log in / log out (passwords stored with `password_hash`, "Remember me" keeps the session for 30 days).
+  * Timeline with the latest 50 posts, newest first.
+  * Write posts of up to 280 characters with a live character counter (Ctrl + Enter publishes).
+  * Like / unlike posts.
+  * Delete your own posts.
+  * User page (`home.php?user=ID`) with the posts of one user, open it clicking a name.
 
 
 Use case :
   * Like user i need account to made login on the app.
   * Like user i need post personal states.
-  * Like user i need updload photos with friend interaction .
-  * Like user i need add friends.
-  * Like user i need watch friends post and interactive with her/his.
+  * Like user i need watch other users post and interactive with her/his (Likes).
+  * To do: follow users, upload photos, comments.
+
+
+Run it locally
+
+No MySQL needed, it can use SQLite:
+
+  1. Set `DB_DRIVER=sqlite` (and `APP_DEBUG=1` to see errors) in `.env`.
+  2. Run `php -S localhost:8000` in the project folder.
+  3. Open http://localhost:8000
+
+The database file (`database/hachi.sqlite`) and its tables are created automatically.
+
+
+Deploy (MySQL)
+
+  1. Run `database/schema.sql` in your MySQL database. It only creates the tables that are missing, so it is safe to run on an existing database.
+  2. Fill `HOST`, `DB_NAME`, `USER_NAME` and `PASSWORD` in `.env` and keep `DB_DRIVER=mysql`.
+
+The `.htaccess` file blocks public access to `.env`, the `App` code and the database files on Apache servers.
+
 
 Arquitecture
-  *To Do
+
+  * `index.php`, `home.php`, `login.php`, `register.php`, `post.php`, `logout.php`: entry points, each one runs `App/Bootstrap/Bootstrap.php`.
+  * The Bootstrap loads `.env`, checks the session and runs the controller with the same name as the file (`home.php` -> `App/Controller/HomeController.php`).
+  * Pages: the controller loads the data, the module (`App/Module`) prepares it and renders the views (`App/View`).
+  * JSON endpoints (`login.php`, `register.php`, `post.php`) are called with `fetch` from `public/js-min`.
+  * Database access lives in `App/Helpers/Database/Tables`.
+
 
 Data model
-*To Do
 
-Limit
- *To Do
+  * `users`: email and password hash.
+  * `user_profile`: first and last name of each user.
+  * `posts`: text of each post, its author and creation date (UTC).
+  * `likes`: one row per user that liked a post.
 
-Api Call: 
 
 Prices:
   Free

@@ -1,76 +1,90 @@
-<?php 
+<?php
 
 namespace App\Bootstrap;
 
 use App\Config\Settings;
-use App\Controller\IndexController;
-use App\Helpers\Cookie\CookieManager;
-use App\Helpers\Database\Facade;
 use App\Helpers\Database\Singleton;
-use App\Helpers\Database\User;
+use App\Helpers\Session\SessionManager;
 
 class Bootstrap {
 
     const PREFIX_NAMESPACE_CONTROLLER = "\App\Controller\\";
 
+    /**
+     * Pages that can be visited without being logged in.
+     */
+    const PUBLIC_CONTROLLERS = ['Index', 'Login', 'Register'];
+
     public static function start(): void
     {
-        self::initSet();
         self::classLoader();
         self::initEnv();
+        self::initSet();
         self::initController();
-        self::isUserLogged();
     }
 
-    private static function isUserLogged()
+    private static function checkAccess(string $controller): void
     {
-        $credential = CookieManager::getInstance()->getLoginCookie();
+        $session = SessionManager::getInstance();
+        $userId = $session->getUserId();
 
-        if (empty($credential) && Settings::get('controller') == 'Index') {
-            return;
+        if ($userId !== null && !Singleton::getFacade()->getUserClass()->selectUserById($userId)) {
+            // The account no longer exists, drop the stale session.
+            $session->logout();
+            $userId = null;
         }
 
-        if (empty($credential) && Settings::get('controller') != 'Index') {
-            header('Location: index.php');
+        if ($userId === null && !in_array($controller, self::PUBLIC_CONTROLLERS)) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                http_response_code(401);
+                header('Content-Type: application/json');
+                echo json_encode(['code' => 1, 'title' => 'FAILED!', 'message' => 'Your session has expired, log in again']);
+                exit;
+            }
+            self::redirect('index.php');
         }
 
-        if (isset($credential) && Settings::get('controller') == 'Index') {
-            header('Location: home.php');
+        if ($userId !== null && $controller == 'Index') {
+            self::redirect('home.php');
         }
+    }
 
-        Singleton::getFacade()->getUserClass()->selectLoginUser($credential['email'], $credential['pass']);
-
-        // TODO: If user deleted account
-
+    private static function redirect(string $location): void
+    {
+        header('Location: ' . $location);
+        exit;
     }
 
     private static function initSet()
     {
-        ini_set("display_errors", 1);
+        ini_set("display_errors", Settings::get('APP_DEBUG') ? '1' : '0');
     }
 
     private static function initEnv()
     {
         $file = dirname(__DIR__, 2) . '/.env';
 
-        if (file_exists($file)) {
-            $envContent = parse_ini_file($file);
+        if (!file_exists($file)) {
+            http_response_code(500);
+            die('Missing .env file in the project root.');
+        }
 
-            foreach ($envContent as $key => $content) {
-                Settings::set($key, $content);
-            }
-        } else {
-            echo "File not found.";
+        $envContent = parse_ini_file($file);
+
+        foreach ($envContent as $key => $content) {
+            Settings::set($key, $content);
         }
     }
 
     private static function initController(): void
     {
-        $scriptSelf = basename($_SERVER['PHP_SELF']);
+        $scriptSelf = basename($_SERVER['SCRIPT_NAME']);
 
         $preController =  ucfirst(str_replace(['/','.php'], '', $scriptSelf));
 
         Settings::set('controller', $preController);
+
+        self::checkAccess($preController);
 
         $controller = Bootstrap::PREFIX_NAMESPACE_CONTROLLER . $preController . 'Controller';
 

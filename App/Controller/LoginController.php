@@ -2,28 +2,30 @@
 
 namespace App\Controller;
 
+use App\Controller\Base\Controller;
 use App\Helpers\Database\Singleton;
-use App\Helpers\Cookie\CookieManager;
+use App\Helpers\Session\SessionManager;
 
-class LoginController {
+class LoginController extends Controller {
+
+    const FAILED_MESSAGE = "Wrong email or password";
 
     public function indexAction()
     {
-        $data = json_decode(file_get_contents('php://input'), 1);
+        $data = $this->readJson();
 
-        $loginResult = Singleton::getFacade()->getUserClass()->selectLoginUser($data['email'], $data['pass']);
+        $email = strtolower(trim($data['email'] ?? ''));
+        $pass = (string) ($data['pass'] ?? '');
 
-        if ($loginResult) {
+        $userId = Singleton::getFacade()->getUserClass()->selectLoginUser($email, $pass);
 
-            CookieManager::getInstance()->setLoginCookie($data);
-            echo json_encode(['code' => 0]);
-
-        } else {
-
-            echo json_encode(['code' => 1]);
-
+        if (!$userId) {
+            $this->jsonError(self::FAILED_MESSAGE);
         }
-        die;
+
+        SessionManager::getInstance()->login($userId, !empty($data['remember-me']));
+
+        $this->jsonResponse(['code' => 0]);
     }
 
 }
