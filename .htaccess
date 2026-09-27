@@ -1,5 +1,5 @@
 # Keep configuration, source code and database files private
-<FilesMatch "^(\.env|sql-querys\.txt)$|\.(sql|sqlite)$">
+<FilesMatch "^\.env|\.(sql|sqlite)$">
     Require all denied
 </FilesMatch>
 

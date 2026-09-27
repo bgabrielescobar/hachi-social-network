@@ -66,7 +66,7 @@ class Bootstrap {
 
         if (!file_exists($file)) {
             http_response_code(500);
-            die('Missing .env file in the project root.');
+            die('Missing .env file, create it from .env.example');
         }
 
         $envContent = parse_ini_file($file);

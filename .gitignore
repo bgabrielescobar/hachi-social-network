@@ -1,3 +1,6 @@
+# Local settings, create yours from .env.example
+.env
+
 # Local SQLite database
 database/*.sqlite
 database/*.sqlite-journal
