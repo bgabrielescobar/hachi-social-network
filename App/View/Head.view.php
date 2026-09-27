@@ -1,3 +1,12 @@
+<?php
+/**
+ * Comienzo del HTML de todas las páginas (lo agrega Module::render()).
+ *
+ * $data['css'] y $data['js'] son las rutas que llena Module::addResources().
+ * "defer" hace que los scripts se ejecuten cuando el HTML ya está cargado,
+ * así pueden encontrar los elementos de la página.
+ */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

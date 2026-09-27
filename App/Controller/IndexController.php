@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Controller\Base\Controller;
 
+/**
+ * index.php: muestra los formularios de login y registro.
+ */
 class IndexController extends Controller
 {
     public function indexAction()
     {
-        // Logged users are sent to home.php by the Bootstrap.
+        // Si ya hay sesión, el Bootstrap mandó al usuario a home.php antes de llegar aquí.
         $this->postController();
     }
 

@@ -1,4 +1,7 @@
--- SQLite schema for local development. It runs automatically when DB_DRIVER=sqlite.
+-- Esquema de la base de datos para SQLite (desarrollo local, DB_DRIVER=sqlite).
+-- Se ejecuta solo en cada conexión (PDOClass::connectSqlite): CREATE TABLE IF NOT EXISTS
+-- solo crea las tablas que faltan, así que no borra datos.
+-- Son las mismas tablas que schema.sql (MySQL), escritas con los tipos de SQLite.
 
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,

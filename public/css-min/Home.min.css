@@ -1,3 +1,10 @@
+/**
+ * Estilos del timeline (home.php).
+ *
+ * Los colores están en variables (--brand, --bg...): cambiando un valor aquí
+ * cambia en toda la página. Se usan así: color: var(--brand);
+ */
+
 :root {
   --brand: #4292dc;
   --brand-light: #6dabe4;
@@ -27,7 +34,7 @@ a {
   text-decoration: none;
 }
 
-/** Top bar */
+/** Barra superior. position: sticky la deja fija arriba al hacer scroll */
 
 .topbar {
   position: sticky;
@@ -76,7 +83,7 @@ a {
   color: var(--text);
 }
 
-/** Layout: timeline + trends sidebar */
+/** Diseño: timeline a la izquierda y tendencias a la derecha (flexbox) */
 
 .layout {
   max-width: 940px;
@@ -144,7 +151,7 @@ a {
   color: var(--muted);
 }
 
-/** New post box */
+/** Caja para escribir un post */
 
 .compose-body,
 .post-body {
@@ -285,7 +292,7 @@ a {
   text-decoration: underline;
 }
 
-/** Weekly trends */
+/** Tendencias de la semana */
 
 .trends {
   flex-direction: column;
@@ -331,7 +338,7 @@ a {
   font-weight: 600;
 }
 
-/** User profile */
+/** Cabecera del perfil y del hashtag */
 
 .profile-header {
   flex-direction: column;
@@ -350,6 +357,8 @@ a {
   font-size: 14px;
 }
 
+/** Pantallas medianas y celulares: una sola columna */
+
 @media screen and (max-width: 900px) {
   .topbar-inner {
     max-width: 600px;
@@ -361,7 +370,7 @@ a {
     align-items: stretch;
   }
 
-  /* Trends go above the timeline as a row of chips */
+  /* Las tendencias van arriba del timeline, como una fila de botones que se desliza */
   .sidebar {
     position: static;
     order: -1;
@@ -387,6 +396,8 @@ a {
     display: none;
   }
 }
+
+/** Celulares: se oculta el nombre en la barra superior (queda el avatar) */
 
 @media screen and (max-width: 480px) {
   .topbar-name-text {

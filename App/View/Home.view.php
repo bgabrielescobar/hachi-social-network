@@ -1,3 +1,21 @@
+<?php
+/**
+ * Timeline, página de usuario y página de hashtag (home.php).
+ *
+ * Datos que llegan de HomeController y HomeModule:
+ *   $data['user']    el usuario con sesión: user_id, name, initials, color
+ *   $data['author']  el usuario de home.php?user=ID, o null
+ *   $data['tag']     el hashtag de home.php?tag=nombre, o null
+ *   $data['posts']   lista de posts: post_id, user_id, name, initials, color, date,
+ *                    content_html, likes, liked, is_mine, created_at
+ *   $data['trends']  tendencias de la semana: tag, posts, label
+ *
+ * Todo texto escrito por usuarios pasa por htmlspecialchars() antes de mostrarse,
+ * para que nadie pueda meter HTML o JavaScript en la página (XSS, ver docs/5-seguridad.md).
+ * content_html ya viene escapado por Hashtag::toHtml().
+ */
+?>
+<?php /* Barra superior: logo, usuario y "Log out" */ ?>
 <header class="topbar">
     <div class="topbar-inner">
         <a href="home.php" class="brand">🐶 Hachi</a>
@@ -13,6 +31,7 @@
 
 <div class="layout">
 <main class="timeline">
+    <?php /* Arriba del timeline: el perfil, el hashtag o la caja para escribir un post */ ?>
     <?php if ($data['author']): ?>
         <section class="card profile-header">
             <a href="home.php" class="back-link">&larr; Back to timeline</a>
@@ -47,6 +66,7 @@
         <?php endif ?>
     <?php endif ?>
 
+    <?php /* data-post-id: Home.min.js lo lee para saber a qué post dar like o borrar */ ?>
     <?php foreach ($data['posts'] as $post): ?>
         <article class="card post" data-post-id="<?php echo $post['post_id'] ?>">
             <span class="avatar" style="background: <?php echo $post['color'] ?>"><?php echo htmlspecialchars($post['initials']) ?></span>
@@ -68,6 +88,7 @@
     <?php endforeach ?>
 </main>
 
+<?php /* Tendencias de la semana (en el celular se muestran arriba del timeline) */ ?>
 <aside class="sidebar">
     <section class="card trends">
         <h2>Trends this week</h2>

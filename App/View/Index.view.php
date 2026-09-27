@@ -1,3 +1,14 @@
+<?php
+/**
+ * Página de login y registro (index.php).
+ *
+ * Los dos formularios se envían con JavaScript (public/js-min/Index.min.js) sin recargar
+ * la página. Solo uno se ve a la vez: los enlaces "Create an account" / "I am already member"
+ * cambian las clases display-on / display-off.
+ *
+ * $data['signin-image'], $data['signup-image']: rutas de las imágenes (IndexModule).
+ */
+?>
 <div class="main">
     <!-- Sign up form -->
     <div class="section-signup-form display-off">

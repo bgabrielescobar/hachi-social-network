@@ -6,16 +6,26 @@ use App\Controller\Base\Controller;
 use App\Helpers\Database\Singleton;
 use App\Helpers\Session\SessionManager;
 
+/**
+ * register.php: endpoint JSON que crea una cuenta.
+ *
+ * Recibe {first_name, last_name, email, pass, re_pass} desde public/js-min/Index.min.js.
+ * Si los datos son válidos crea el usuario, inicia su sesión y responde {code: 0}.
+ */
 class RegisterController extends Controller {
 
     const MIN_PASSWORD_LENGTH = 6;
 
+    /**
+     * Igual al tamaño de las columnas first_name y last_name (varchar(50)).
+     */
     const MAX_NAME_LENGTH = 50;
 
     public function indexAction()
     {
         $data = $this->readJson();
 
+        // trim() quita los espacios del principio y del final.
         $userData = [
             'first_name' => trim($data['first_name'] ?? ''),
             'last_name' => trim($data['last_name'] ?? ''),
@@ -31,13 +41,16 @@ class RegisterController extends Controller {
 
         $userId = Singleton::getFacade()->getUserClass()->insertUser($userData);
 
+        // La cuenta nueva entra directamente, sin tener que hacer login.
         SessionManager::getInstance()->login($userId, false);
 
         $this->jsonResponse(['code' => 0]);
     }
 
     /**
-     * Returns the message to show the user, or null when the data is valid.
+     * Devuelve el mensaje de error para el usuario, o null si los datos son válidos.
+     * El formulario también valida en el navegador, pero eso se puede saltar:
+     * la validación que cuenta es la del servidor.
      */
     private function validate(array $userData, string $repeatedPass): ?string
     {

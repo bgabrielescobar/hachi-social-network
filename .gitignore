@@ -1,6 +1,8 @@
-# Local settings, create yours from .env.example
+# Archivos que git no debe guardar.
+
+# Configuración local, cada persona crea la suya copiando .env.example
 .env
 
-# Local SQLite database
+# Base de datos SQLite local
 database/*.sqlite
 database/*.sqlite-journal

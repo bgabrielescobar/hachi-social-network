@@ -1,4 +1,9 @@
-/** Alert style */
+/**
+ * Estilos compartidos por todas las páginas (se cargan antes que los de cada página).
+ * El nombre termina en ".min.css" por costumbre del proyecto, pero no está minificado.
+ */
+
+/** Alerta flotante (App/View/Alert.view.php). Empieza oculta arriba de la pantalla. */
 
 .alert {
   position: fixed;
@@ -39,6 +44,7 @@
   transition: 0.3s;
 }
 
+/* alertDialog() en master.min.js agrega esta clase para mostrarla */
 .alert.display-alert{
   opacity: 1;
   pointer-events: auto;
