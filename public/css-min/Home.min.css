@@ -1,0 +1,406 @@
+/**
+ * Estilos del timeline (home.php).
+ *
+ * Los colores están en variables (--brand, --bg...): cambiando un valor aquí
+ * cambia en toda la página. Se usan así: color: var(--brand);
+ */
+
+:root {
+  --brand: #4292dc;
+  --brand-light: #6dabe4;
+  --bg: #f5f7fa;
+  --card: #fff;
+  --text: #1f2933;
+  --muted: #6b7785;
+  --border: #e4e8ee;
+  --like: #e0245e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Poppins, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/** Barra superior. position: sticky la deja fija arriba al hacer scroll */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-inner {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.topbar-user,
+.topbar-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-user {
+  gap: 16px;
+}
+
+.topbar-name {
+  font-weight: 500;
+}
+
+.logout-link {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.logout-link:hover {
+  color: var(--text);
+}
+
+/** Diseño: timeline a la izquierda y tendencias a la derecha (flexbox) */
+
+.layout {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.sidebar {
+  position: sticky;
+  top: 72px;
+  flex-shrink: 0;
+  width: 300px;
+}
+
+/** Timeline */
+
+.timeline {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.avatar-sm {
+  width: 30px;
+  height: 30px;
+  font-size: 12px;
+}
+
+.avatar-lg {
+  width: 80px;
+  height: 80px;
+  font-size: 30px;
+}
+
+.empty {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+/** Caja para escribir un post */
+
+.compose-body,
+.post-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.compose textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 0;
+  border: none;
+  outline: none;
+  resize: vertical;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 18px;
+}
+
+.compose-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.char-counter {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.char-counter.over-limit {
+  color: var(--like);
+  font-weight: 600;
+}
+
+.btn {
+  padding: 8px 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--brand-light);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--brand);
+}
+
+.btn:disabled {
+  background: var(--brand-light);
+  opacity: 0.5;
+  cursor: default;
+}
+
+/** Posts */
+
+.post-header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.post-author {
+  font-weight: 600;
+}
+
+.post-author:hover {
+  text-decoration: underline;
+}
+
+.post-date {
+  color: var(--muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.post-delete {
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.post-delete:hover {
+  color: var(--like);
+}
+
+.post-content {
+  margin: 4px 0 8px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.like-btn:hover,
+.like-btn.liked {
+  color: var(--like);
+}
+
+.like-icon {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+
+.like-btn:active .like-icon {
+  transform: scale(1.3);
+}
+
+.hashtag,
+.hashtag-title {
+  color: var(--brand);
+}
+
+.hashtag:hover {
+  text-decoration: underline;
+}
+
+/** Tendencias de la semana */
+
+.trends {
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 0 8px;
+}
+
+.trends h2 {
+  margin: 0 16px 4px;
+  font-size: 18px;
+}
+
+.trends-empty {
+  margin: 0 16px 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.trend-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trend {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+}
+
+.trend:hover,
+.trend.active {
+  background: var(--bg);
+}
+
+.trend-rank,
+.trend-count {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.trend-tag {
+  font-weight: 600;
+}
+
+/** Cabecera del perfil y del hashtag */
+
+.profile-header {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.back-link {
+  align-self: flex-start;
+  color: var(--brand);
+  font-size: 14px;
+}
+
+/** Pantallas medianas y celulares: una sola columna */
+
+@media screen and (max-width: 900px) {
+  .topbar-inner {
+    max-width: 600px;
+  }
+
+  .layout {
+    max-width: 600px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Las tendencias van arriba del timeline, como una fila de botones que se desliza */
+  .sidebar {
+    position: static;
+    order: -1;
+    width: auto;
+  }
+
+  .trend-list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 16px 8px;
+  }
+
+  .trend {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+
+  .trend-rank {
+    display: none;
+  }
+}
+
+/** Celulares: se oculta el nombre en la barra superior (queda el avatar) */
+
+@media screen and (max-width: 480px) {
+  .topbar-name-text {
+    display: none;
+  }
+}

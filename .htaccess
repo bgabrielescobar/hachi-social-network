@@ -1,0 +1,9 @@
+# Reglas para servidores Apache (el hosting). Con "php -S" no se aplican.
+
+# Nadie puede descargar el .env (tiene las contraseñas) ni los archivos de la base de datos.
+<FilesMatch "^\.env|\.(sql|sqlite)$">
+    Require all denied
+</FilesMatch>
+
+# Las carpetas App (el código) y database responden "no encontrado".
+RedirectMatch 404 ^/(App|database)(/|$)

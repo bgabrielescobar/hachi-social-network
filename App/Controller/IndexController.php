@@ -2,24 +2,17 @@
 
 namespace App\Controller;
 
-use App\Config\Settings; 
 use App\Controller\Base\Controller;
 
+/**
+ * index.php: muestra los formularios de login y registro.
+ */
 class IndexController extends Controller
 {
     public function indexAction()
     {
-
-        if ($this->isUserLogged()) {
-            header('Location: home.php');
-        }
-
+        // Si ya hay sesión, el Bootstrap mandó al usuario a home.php antes de llegar aquí.
         $this->postController();
-    }
-
-    private function isUserLogged(): bool
-    {
-        return isset($_COOKIE['user_logged']);
     }
 
 }

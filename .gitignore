@@ -1,0 +1,8 @@
+# Archivos que git no debe guardar.
+
+# Configuración local, cada persona crea la suya copiando .env.example
+.env
+
+# Base de datos SQLite local
+database/*.sqlite
+database/*.sqlite-journal

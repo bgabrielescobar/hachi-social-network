@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Endpoint JSON que inicia sesión (LoginController).
- * Lo llama public/js-min/Index.min.js cuando se envía el formulario de login.
+ * Endpoint JSON para publicar, borrar y dar like a los posts (PostController).
+ * Lo llama public/js-min/Home.min.js.
  *
  * Todos los archivos .php de esta carpeta son iguales: cargan el Bootstrap y lo arrancan.
  * El Bootstrap usa el nombre del archivo para elegir el controlador:
- * login.php -> App/Controller/LoginController.php
+ * post.php -> App/Controller/PostController.php
  *
  * Más detalles en docs/2-arquitectura.md
  */

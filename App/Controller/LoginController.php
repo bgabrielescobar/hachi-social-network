@@ -2,28 +2,39 @@
 
 namespace App\Controller;
 
+use App\Controller\Base\Controller;
 use App\Helpers\Database\Singleton;
-use App\Helpers\Cookie\CookieManager;
+use App\Helpers\Session\SessionManager;
 
-class LoginController {
+/**
+ * login.php: endpoint JSON que inicia sesión.
+ *
+ * Recibe {email, pass, remember-me} desde public/js-min/Index.min.js y responde
+ * {code: 0} si el email y la contraseña son correctos. El JavaScript entonces va a home.php.
+ */
+class LoginController extends Controller {
+
+    const FAILED_MESSAGE = "Wrong email or password";
 
     public function indexAction()
     {
-        $data = json_decode(file_get_contents('php://input'), 1);
+        $data = $this->readJson();
 
-        $loginResult = Singleton::getFacade()->getUserClass()->selectLoginUser($data['email'], $data['pass']);
+        // Los emails se guardan en minúsculas: Ana@Mail.com y ana@mail.com son la misma cuenta.
+        $email = strtolower(trim($data['email'] ?? ''));
+        $pass = (string) ($data['pass'] ?? '');
 
-        if ($loginResult) {
+        $userId = Singleton::getFacade()->getUserClass()->selectLoginUser($email, $pass);
 
-            CookieManager::getInstance()->setLoginCookie($data);
-            echo json_encode(['code' => 0]);
-
-        } else {
-
-            echo json_encode(['code' => 1]);
-
+        // El mismo mensaje si falla el email o la contraseña, así no se revela qué emails existen.
+        if (!$userId) {
+            $this->jsonError(self::FAILED_MESSAGE);
         }
-        die;
+
+        // "remember-me" solo llega cuando la casilla "Remember me" está marcada.
+        SessionManager::getInstance()->login($userId, !empty($data['remember-me']));
+
+        $this->jsonResponse(['code' => 0]);
     }
 
 }
