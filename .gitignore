@@ -1,2 +1,3 @@
 # Local SQLite database
-database/*.sqlite*
+database/*.sqlite
+database/*.sqlite-journal
