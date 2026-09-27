@@ -1,71 +1,103 @@
-Hachi social network (Small twitter type)
+# 🐶 Hachi: una red social sencilla estilo Twitter
 
-Overview: 
- 
-Small social network application to practice PHP/HTML/CSS/SQL.
+Hachi es una red social pequeña hecha con **PHP, HTML, CSS, JavaScript y SQL**, sin frameworks.
+Está pensada para **aprender y practicar**: el código es corto, está comentado en español
+y la carpeta [`docs/`](docs/) explica paso a paso cómo funciona cada parte.
 
-Users can create an account, log in, publish short posts (up to 280 characters), like posts, see the posts of every user in a shared timeline and follow the trending hashtags of the week.
+![El timeline de Hachi](docs/img/timeline.png)
 
+## Qué se puede hacer
 
-Features
+- Crear una cuenta, iniciar y cerrar sesión ("Remember me" mantiene la sesión 30 días).
+- Publicar posts de hasta 280 caracteres, con un contador que se actualiza mientras escribes (`Ctrl + Enter` publica).
+- Dar y quitar likes.
+- Borrar tus propios posts.
+- Ver los posts de una persona haciendo clic en su nombre.
+- Usar **#hashtags**: cada uno es un enlace a todos los posts que lo usan.
+- Ver las **tendencias de la semana**: los 5 hashtags más usados en los últimos 7 días.
 
-  * Sign up / log in / log out (passwords stored with `password_hash`, "Remember me" keeps the session for 30 days).
-  * Timeline with the latest 50 posts, newest first.
-  * Write posts of up to 280 characters with a live character counter (Ctrl + Enter publishes).
-  * Like / unlike posts.
-  * Delete your own posts.
-  * User page (`home.php?user=ID`) with the posts of one user, open it clicking a name.
-  * Hashtags: `#words` in a post become links to `home.php?tag=word` with every post that uses it.
-  * Trends this week: the 5 hashtags used in more posts during the last 7 days.
+## Pruébalo en 3 minutos
 
+Solo necesitas PHP 7.4 o más nuevo. No hace falta instalar MySQL.
 
-Use case :
-  * Like user i need account to made login on the app.
-  * Like user i need post personal states.
-  * Like user i need watch other users post and interactive with her/his (Likes).
-  * To do: follow users, upload photos, comments.
+```bash
+git clone https://github.com/bgabrielescobar/hachi-social-network.git
+cd hachi-social-network
+cp .env.example .env        # en Windows: copy .env.example .env
+```
 
+Abre `.env` con tu editor y cambia `DB_DRIVER=mysql` por `DB_DRIVER=sqlite`. Después:
 
-Run it locally
+```bash
+php -S localhost:8000
+```
 
-No MySQL needed, it can use SQLite:
+Abre http://localhost:8000 y crea una cuenta. ¿Algo no funciona? Mira [1. Instalación](docs/1-instalacion.md).
 
-  1. Copy `.env.example` to `.env` and set `DB_DRIVER=sqlite` (and `APP_DEBUG=1` to see errors).
-  2. Run `php -S localhost:8000` in the project folder.
-  3. Open http://localhost:8000
+## Guías para aprender
 
-The database file (`database/hachi.sqlite`) and its tables are created automatically.
+Están pensadas para leerse en orden:
 
+| # | Guía | Qué vas a aprender |
+|---|------|--------------------|
+| 1 | [Instalación](docs/1-instalacion.md) | Instalar PHP, arrancar el proyecto y resolver los errores más comunes |
+| 2 | [Arquitectura](docs/2-arquitectura.md) | Cómo está organizado el código: Bootstrap, controladores, módulos y vistas |
+| 3 | [Recorrido de una petición](docs/3-recorrido-de-una-peticion.md) | Qué pasa, archivo por archivo, al abrir el timeline, publicar o dar like |
+| 4 | [Base de datos](docs/4-base-de-datos.md) | Las tablas, cómo se relacionan y las consultas SQL explicadas |
+| 5 | [Seguridad](docs/5-seguridad.md) | Contraseñas, sesiones, inyección SQL, XSS y CSRF, con los errores que tenía este proyecto |
+| 6 | [Frontend](docs/6-frontend.md) | El CSS y el JavaScript: `fetch`, eventos y diseño para celulares |
+| 7 | [Tutorial: agregar una página](docs/7-tutorial-nueva-pagina.md) | Crear tu primera página, paso a paso |
+| 8 | [Ejercicios](docs/8-ejercicios.md) | 17 ideas para practicar, de fáciles a difíciles, con pistas |
+| | [Glosario](docs/glosario.md) | Las palabras técnicas, explicadas |
 
-Deploy (MySQL)
+## Mapa del proyecto
 
-  1. Run `database/schema.sql` in your MySQL database. It only creates the tables that are missing, so it is safe to run on an existing database.
-  2. Copy `.env.example` to `.env`, fill `HOST`, `DB_NAME`, `USER_NAME` and `PASSWORD` and keep `DB_DRIVER=mysql`.
+```
+hachi-social-network/
+├── index.php ... logout.php   Puntos de entrada: uno por página o acción (tabla de abajo)
+├── App/
+│   ├── Bootstrap/             Arranca la aplicación en cada petición
+│   ├── Config/                Settings: la configuración
+│   ├── Controller/            Reciben la petición y deciden la respuesta
+│   ├── Module/                Preparan los datos y arman la página
+│   ├── View/                  El HTML de cada página
+│   └── Helpers/               Herramientas: base de datos, sesión, hashtags
+├── public/
+│   ├── css-min/               Estilos: master (todas las páginas), Index y Home (cada página)
+│   ├── js-min/                JavaScript, organizado igual que el CSS
+│   └── img/                   Imágenes
+├── database/                  Las tablas: schema.sql (MySQL) y schema.sqlite.sql (SQLite)
+├── docs/                      Esta documentación
+├── .env.example               Plantilla de la configuración
+└── .htaccess                  Reglas de seguridad para servidores Apache
+```
 
-`.env` is not saved in git, so your passwords stay out of the repository.
+| Archivo | Tipo | Qué hace |
+|---|---|---|
+| `index.php` | Página | Login y registro |
+| `home.php` | Página | Timeline, perfil (`home.php?user=ID`) y hashtag (`home.php?tag=nombre`) |
+| `login.php` | JSON | Inicia sesión |
+| `register.php` | JSON | Crea una cuenta |
+| `post.php` | JSON | Publica, borra y da like |
+| `logout.php` | Redirección | Cierra la sesión y vuelve al login |
 
-The `.htaccess` file blocks public access to `.env`, the `App` code and the database files on Apache servers.
+## Publicarlo en un hosting con MySQL
 
+1. Crea una base de datos y ejecuta [`database/schema.sql`](database/schema.sql)
+   (por ejemplo, desde phpMyAdmin → **Importar**). Se puede volver a ejecutar sin perder datos: solo crea las tablas que faltan.
+2. Sube los archivos y crea el `.env` a partir de `.env.example`, con `DB_DRIVER=mysql` y los datos de tu base
+   (`HOST`, `DB_NAME`, `USER_NAME`, `PASSWORD`).
+3. Deja `APP_DEBUG=0`.
 
-Arquitecture
+El `.env` no se guarda en Git para que las contraseñas no terminen en el repositorio.
+En servidores Apache, el `.htaccess` impide descargarlo y ver el código.
 
-  * `index.php`, `home.php`, `login.php`, `register.php`, `post.php`, `logout.php`: entry points, each one runs `App/Bootstrap/Bootstrap.php`.
-  * The Bootstrap loads `.env`, checks the session and runs the controller with the same name as the file (`home.php` -> `App/Controller/HomeController.php`).
-  * Pages: the controller loads the data, the module (`App/Module`) prepares it and renders the views (`App/View`).
-  * JSON endpoints (`login.php`, `register.php`, `post.php`) are called with `fetch` from `public/js-min`.
-  * Database access lives in `App/Helpers/Database/Tables`.
+## Tecnologías
 
+- **PHP 7.4+** con PDO (MySQL o SQLite) y la extensión mbstring.
+- **HTML y CSS** sin librerías: flexbox, variables CSS y media queries.
+- **JavaScript** sin librerías: `fetch`, `async`/`await` y eventos.
+- La fuente [Poppins](https://fonts.google.com/specimen/Poppins) y los iconos
+  [Material Design Iconic Font](https://zavoloklom.github.io/material-design-iconic-font/), cargados desde internet.
 
-Data model
-
-  * `users`: email and password hash.
-  * `user_profile`: first and last name of each user.
-  * `posts`: text of each post, its author and creation date (UTC).
-  * `likes`: one row per user that liked a post.
-  * `post_hashtags`: hashtags of each post (lowercase, without `#`), used for the trends.
-
-
-Prices:
-  Free
-  
-Host: https://hachi-sn.000webhostapp.com/index.php
+Host original: https://hachi-sn.000webhostapp.com/index.php
