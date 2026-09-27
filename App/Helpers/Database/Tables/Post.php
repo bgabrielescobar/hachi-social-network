@@ -8,20 +8,38 @@ class Post extends PDOClass {
 
     const TIMELINE_LIMIT = 50;
 
+    const TRENDS_DAYS = 7;
+
+    const TRENDS_LIMIT = 5;
+
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function insertPost(int $userId, string $content): bool
+    /**
+     * Saves the post and its hashtags (lowercase, without the "#").
+     */
+    public function insertPost(int $userId, string $content, array $tags): void
     {
+        $this->pdo->beginTransaction();
+
         $sql = "INSERT INTO posts (user_id, content, created_at) VALUES (:user_id, :content, :created_at)";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
+        $stmt->execute([
             'user_id' => $userId,
             'content' => $content,
             'created_at' => gmdate('Y-m-d H:i:s'),
         ]);
+
+        $postId = (int) $this->pdo->lastInsertId();
+
+        $stmt = $this->pdo->prepare("INSERT INTO post_hashtags (post_id, tag) VALUES (:post_id, :tag)");
+        foreach ($tags as $tag) {
+            $stmt->execute(['post_id' => $postId, 'tag' => $tag]);
+        }
+
+        $this->pdo->commit();
     }
 
     /**
@@ -37,8 +55,10 @@ class Post extends PDOClass {
             return false;
         }
 
-        $stmt = $this->pdo->prepare("DELETE FROM likes WHERE post_id = :post_id");
-        $stmt->execute(['post_id' => $postId]);
+        foreach (['likes', 'post_hashtags'] as $table) {
+            $stmt = $this->pdo->prepare("DELETE FROM $table WHERE post_id = :post_id");
+            $stmt->execute(['post_id' => $postId]);
+        }
 
         return true;
     }
@@ -74,9 +94,9 @@ class Post extends PDOClass {
     }
 
     /**
-     * Latest posts, newest first. When $authorId is given only that user's posts are returned.
+     * Latest posts, newest first. $authorId and $tag keep only the posts of that user / with that hashtag.
      */
-    public function selectTimeline(int $viewerId, ?int $authorId = null): array
+    public function selectTimeline(int $viewerId, ?int $authorId = null, ?string $tag = null): array
     {
         $params = ['viewer_id' => $viewerId];
 
@@ -87,15 +107,45 @@ class Post extends PDOClass {
                 FROM posts p
                 LEFT JOIN user_profile up ON up.user_id = p.user_id";
 
+        $where = [];
+
         if ($authorId !== null) {
-            $sql .= " WHERE p.user_id = :author_id";
+            $where[] = "p.user_id = :author_id";
             $params['author_id'] = $authorId;
+        }
+
+        if ($tag !== null) {
+            $where[] = "p.post_id IN (SELECT post_id FROM post_hashtags WHERE tag = :tag)";
+            $params['tag'] = $tag;
+        }
+
+        if ($where) {
+            $sql .= " WHERE " . implode(' AND ', $where);
         }
 
         $sql .= " ORDER BY p.post_id DESC LIMIT " . self::TIMELINE_LIMIT;
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Most used hashtags of the last 7 days with their number of posts.
+     * On a tie the hashtag used most recently goes first.
+     */
+    public function selectWeeklyTrends(): array
+    {
+        $sql = "SELECT h.tag, COUNT(*) AS posts
+                FROM post_hashtags h
+                JOIN posts p ON p.post_id = h.post_id
+                WHERE p.created_at >= :since
+                GROUP BY h.tag
+                ORDER BY posts DESC, MAX(p.post_id) DESC
+                LIMIT " . self::TRENDS_LIMIT;
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['since' => gmdate('Y-m-d H:i:s', time() - self::TRENDS_DAYS * 86400)]);
         return $stmt->fetchAll();
     }
 

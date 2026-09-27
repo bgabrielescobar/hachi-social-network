@@ -36,3 +36,11 @@ CREATE TABLE IF NOT EXISTS likes (
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS post_hashtags (
+    post_id int NOT NULL,
+    tag varchar(100) COLLATE utf8mb4_bin NOT NULL,
+    PRIMARY KEY (post_id, tag),
+    INDEX (tag),
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -29,3 +29,11 @@ CREATE TABLE IF NOT EXISTS likes (
     user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
     PRIMARY KEY (post_id, user_id)
 );
+
+CREATE TABLE IF NOT EXISTS post_hashtags (
+    post_id INTEGER NOT NULL REFERENCES posts(post_id) ON DELETE CASCADE,
+    tag TEXT NOT NULL,
+    PRIMARY KEY (post_id, tag)
+);
+
+CREATE INDEX IF NOT EXISTS post_hashtags_tag ON post_hashtags (tag);

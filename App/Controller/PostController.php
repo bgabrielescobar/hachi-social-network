@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Controller\Base\Controller;
 use App\Helpers\Database\Singleton;
+use App\Helpers\Hashtag\Hashtag;
 use App\Helpers\Session\SessionManager;
 
 class PostController extends Controller
@@ -44,7 +45,7 @@ class PostController extends Controller
             $this->jsonError("Posts must have between 1 and " . self::MAX_LENGTH . " characters");
         }
 
-        $this->postTable->insertPost($this->userId, $content);
+        $this->postTable->insertPost($this->userId, $content, Hashtag::extract($content));
 
         $this->jsonResponse(['code' => 0]);
     }

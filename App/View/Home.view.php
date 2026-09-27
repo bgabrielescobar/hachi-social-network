@@ -11,12 +11,18 @@
     </div>
 </header>
 
+<div class="layout">
 <main class="timeline">
     <?php if ($data['author']): ?>
         <section class="card profile-header">
             <a href="home.php" class="back-link">&larr; Back to timeline</a>
             <span class="avatar avatar-lg" style="background: <?php echo $data['author']['color'] ?>"><?php echo htmlspecialchars($data['author']['initials']) ?></span>
             <h1><?php echo htmlspecialchars($data['author']['name']) ?></h1>
+        </section>
+    <?php elseif ($data['tag'] !== null): ?>
+        <section class="card profile-header">
+            <a href="home.php" class="back-link">&larr; Back to timeline</a>
+            <h1 class="hashtag-title">#<?php echo htmlspecialchars($data['tag']) ?></h1>
         </section>
     <?php else: ?>
         <form class="card compose" id="compose-form">
@@ -32,7 +38,13 @@
     <?php endif ?>
 
     <?php if (empty($data['posts'])): ?>
-        <p class="empty"><?php echo $data['author'] ? 'No posts yet.' : 'No posts yet. Be the first to say something!' ?></p>
+        <?php if ($data['author']): ?>
+            <p class="empty">No posts yet.</p>
+        <?php elseif ($data['tag'] !== null): ?>
+            <p class="empty">No posts with #<?php echo htmlspecialchars($data['tag']) ?> yet.</p>
+        <?php else: ?>
+            <p class="empty">No posts yet. Be the first to say something!</p>
+        <?php endif ?>
     <?php endif ?>
 
     <?php foreach ($data['posts'] as $post): ?>
@@ -46,7 +58,7 @@
                         <button type="button" class="post-delete" title="Delete post">Delete</button>
                     <?php endif ?>
                 </div>
-                <p class="post-content"><?php echo htmlspecialchars($post['content']) ?></p>
+                <p class="post-content"><?php echo $post['content_html'] ?></p>
                 <button type="button" class="like-btn<?php echo $post['liked'] ? ' liked' : '' ?>" aria-label="Like">
                     <span class="like-icon">&#9829;&#xFE0E;</span>
                     <span class="like-count"><?php echo $post['likes'] ?></span>
@@ -55,3 +67,25 @@
         </article>
     <?php endforeach ?>
 </main>
+
+<aside class="sidebar">
+    <section class="card trends">
+        <h2>Trends this week</h2>
+        <?php if (empty($data['trends'])): ?>
+            <p class="trends-empty">No trends yet. Add a #hashtag to your posts to start one.</p>
+        <?php else: ?>
+            <ol class="trend-list">
+                <?php foreach ($data['trends'] as $index => $trend): ?>
+                    <li>
+                        <a href="home.php?tag=<?php echo urlencode($trend['tag']) ?>" class="trend<?php echo $trend['tag'] === $data['tag'] ? ' active' : '' ?>">
+                            <span class="trend-rank"><?php echo $index + 1 ?> · Trending</span>
+                            <span class="trend-tag">#<?php echo htmlspecialchars($trend['tag']) ?></span>
+                            <span class="trend-count"><?php echo $trend['label'] ?></span>
+                        </a>
+                    </li>
+                <?php endforeach ?>
+            </ol>
+        <?php endif ?>
+    </section>
+</aside>
+</div>

@@ -2,6 +2,7 @@
 
 namespace App\Module;
 
+use App\Helpers\Hashtag\Hashtag;
 use App\Module\Base\Module;
 
 class HomeModule extends Module {
@@ -17,9 +18,15 @@ class HomeModule extends Module {
         foreach ($data['posts'] as &$post) {
             $post = $this->withProfile($post);
             $post['date'] = $this->timeAgo($post['created_at']);
+            $post['content_html'] = Hashtag::toHtml($post['content']);
             $post['is_mine'] = $post['user_id'] == $data['user']['user_id'];
         }
         unset($post);
+
+        foreach ($data['trends'] as &$trend) {
+            $trend['label'] = $trend['posts'] . ($trend['posts'] == 1 ? ' post' : ' posts');
+        }
+        unset($trend);
 
         $this->addView('Alert');
 
